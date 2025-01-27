@@ -1,2 +1,2 @@
 0=${(%):-%N}
-source ${0:A:h}/koll.zsh
+source ${0:A:h}/kollzsh.zsh
