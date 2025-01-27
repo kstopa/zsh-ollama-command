@@ -1,4 +1,6 @@
-# kollzsh
+# koll.zsh
+
+koll.zsh: keyvez ollama for zsh
 
 An [`oh-my-zsh`](https://ohmyz.sh) plugin that integrates the OLLAMA AI model 
 with [fzf](https://github.com/junegunn/fzf) to provide intelligent command 
@@ -22,12 +24,12 @@ suggestions based on user input requirements.
 
 ## Configuration Variables
 
-| Variable Name                | Default Value            | Description                                    |
-|------------------------------|--------------------------|------------------------------------------------|
-| `ZSH_OLLAMA_MODEL`           | `qwen2.5-coder:3b`       | OLLAMA model to use (e.g., `qwen2.5-coder:3b`) |
-| `ZSH_OLLAMA_COMMANDS_HOTKEY` | `Ctrl-o`                 | Default shortcut key for triggering the plugin |
-| `ZSH_OLLAMA_COMMANDS`        | 5                        | Number of command suggestions displayed        |
-| `ZSH_OLLAMA_URL`             | `http://localhost:11434` | The URL of OLLAMA server host                  |
+| Variable Name          | Default Value            | Description                                    |
+|------------------------|--------------------------|------------------------------------------------|
+| `KOLLZSH_MODEL`        | `qwen2.5-coder:3b`       | OLLAMA model to use (e.g., `qwen2.5-coder:3b`) |
+| `KOLLZSH_HOTKEY`       | `^o` (Ctrl-o)            | Default shortcut key for triggering the plugin |
+| `KOLLZSH_COMMAND_COUNT`| `5`                      | Number of command suggestions displayed        |
+| `KOLLZSH_URL`          | `http://localhost:11434` | The URL of OLLAMA server host                  |
 
 ## Usage
 
