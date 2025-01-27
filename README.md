@@ -24,7 +24,7 @@ suggestions based on user input requirements.
 
 | Variable Name                | Default Value            | Description                                    |
 |------------------------------|--------------------------|------------------------------------------------|
-| `ZSH_OLLAMA_MODEL`           | `llama3`                 | OLLAMA model to use (e.g., `llama3`)           |
+| `ZSH_OLLAMA_MODEL`           | `qwen2.5-coder:3b`       | OLLAMA model to use (e.g., `qwen2.5-coder:3b`) |
 | `ZSH_OLLAMA_COMMANDS_HOTKEY` | `Ctrl-o`                 | Default shortcut key for triggering the plugin |
 | `ZSH_OLLAMA_COMMANDS`        | 5                        | Number of command suggestions displayed        |
 | `ZSH_OLLAMA_URL`             | `http://localhost:11434` | The URL of OLLAMA server host                  |
