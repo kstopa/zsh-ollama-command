@@ -1,6 +1,5 @@
 # koll.zsh
 
-![Kollzsh Beer](kollzsh_beer.png)
 ```
   :###:
   :   :
@@ -72,3 +71,5 @@ plugin is perfect for developers, system administrators, and anyone looking to
 streamline their workflow.
 
 Let me know if you have any specific requests or changes!
+
+![Kollzsh Beer](kollzsh_beer.png)
