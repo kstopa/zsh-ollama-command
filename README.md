@@ -4,6 +4,8 @@
 
 koll.zsh: keyvez ollama for zsh
 
+https://github.com/keyvank/kollzsh/assets/demo.mov
+
 An [`oh-my-zsh`](https://ohmyz.sh) plugin that integrates the OLLAMA AI model 
 with [fzf](https://github.com/junegunn/fzf) to provide intelligent command 
 suggestions based on user input requirements.
