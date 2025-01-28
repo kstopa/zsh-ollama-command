@@ -1,5 +1,7 @@
 # koll.zsh
 
+![Kollzsh Beer](kollzsh_beer.png)
+
 koll.zsh: keyvez ollama for zsh
 
 An [`oh-my-zsh`](https://ohmyz.sh) plugin that integrates the OLLAMA AI model 

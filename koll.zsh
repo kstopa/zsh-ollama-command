@@ -31,6 +31,7 @@ validate_required() {
   check_command "jq" || return 1
   check_command "fzf" || return 1
   check_command "curl" || return 1
+  check_command "python3" || return 1
   
   # Check if Ollama is running
   check_ollama_running || return 1
@@ -58,80 +59,19 @@ fzf_kollzsh() {
   print
   print -u1 "👻Please wait..."
 
-  KOLLZSH_MESSAGE_CONTENT="Seeking OLLAMA for $(detect_os) terminal commands for the following task: $KOLLZSH_USER_QUERY. Reply with a JSON array without newlines consisting solely of possible commands. The format must use double quotes like this: [\"command1; command2;\", \"command3&command4;\"] - do not use single quotes. Response only contains array, no any additional description. No additional text should be present in each entry and commands, remove empty string entry. Each string entry should be a new string entry. If the task need more than one command, combine them in one string entry. Each string entry should only contain the command(s). Do not include empty entry. Provide multiple entry (at most $KOLLZSH_COMMAND_COUNT relevant entry) in response Json suggestions if available. Please ensure response can be parsed by jq"
-
-  # Properly escape the message content for JSON
-  KOLLZSH_MESSAGE_CONTENT_ESCAPED=$(echo "$KOLLZSH_MESSAGE_CONTENT" | sed 's/"/\\"/g')
-
-  KOLLZSH_REQUEST_BODY=$(cat <<EOF
-{
-  "model": "$KOLLZSH_MODEL",
-  "messages": [
-    {
-      "role": "user",
-      "content": "$KOLLZSH_MESSAGE_CONTENT_ESCAPED"
-    }
-  ],
-  "stream": false
-}
-EOF
-)
-
-  KOLLZSH_RESPONSE=$(curl --silent "${KOLLZSH_URL}/api/chat" \
-    -H "Content-Type: application/json" \
-    -d "$KOLLZSH_REQUEST_BODY")
-  local ret=$?
-
-  if [ $ret -ne 0 ]; then
-    log_debug "Curl request failed with status: $ret"
-    echo "Error: Failed to get response from Ollama"
-    return 1
-  fi
-
   log_debug "Raw Ollama response:" "$KOLLZSH_RESPONSE"
 
-  # First extract just the content field from the response
-  TEMP_JSON=$(mktemp)
-  echo "$KOLLZSH_RESPONSE" | jq -r '.message.content' > "$TEMP_JSON"
+  # Get absolute path to the script directory
+  PLUGIN_DIR=${${(%):-%x}:A:h}
+  KOLLZSH_COMMANDS=$(python3 "$PLUGIN_DIR/ollama_util.py" "$KOLLZSH_USER_QUERY")
   
-  if [ $? -ne 0 ] || [ ! -s "$TEMP_JSON" ]; then
-    log_debug "Failed to extract message content"
-    echo "Error: Failed to extract message content"
-    rm "$TEMP_JSON"
-    return 1
-  fi
-  
-  # Clean up markdown formatting and convert to proper JSON
-  CLEANED_CONTENT=$(cat "$TEMP_JSON" | 
-    sed -E 's/^```json[[:space:]]*//' |  # Remove leading ```json and any whitespace
-    sed -E 's/[[:space:]]*```[[:space:]]*$//' |  # Remove trailing ``` and any whitespace
-    sed -E "s/'/\"/g" |  # Convert single quotes to double quotes
-    tr -d '\n\r')  # Remove all newlines and carriage returns
-  
-  log_debug "Cleaned content:" "$CLEANED_CONTENT"
-  
-  # Write cleaned content to temp file for jq processing
-  echo "$CLEANED_CONTENT" > "$TEMP_JSON"
-  
-  # Validate it's a proper JSON array
-  if ! jq -e 'type == "array"' "$TEMP_JSON" >/dev/null 2>&1; then
-    log_debug "Not a valid JSON array:" "$CLEANED_CONTENT"
-    echo "Error: Response is not a valid array of commands"
-    rm "$TEMP_JSON"
-    return 1
-  fi
-
-  # Extract commands
-  KOLLZSH_COMMANDS=$(jq -r '.[]' "$TEMP_JSON")
   if [ $? -ne 0 ] || [ -z "$KOLLZSH_COMMANDS" ]; then
-    log_debug "Failed to extract commands from array"
-    echo "Error: Failed to extract command suggestions"
-    rm "$TEMP_JSON"
+    log_debug "Failed to parse commands"
+    echo "Error: Failed to parse commands"
     return 1
   fi
   
   log_debug "Extracted commands:" "$KOLLZSH_COMMANDS"
-  rm "$TEMP_JSON"
 
   tput cuu 1 # cleanup waiting message
 
