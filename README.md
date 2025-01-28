@@ -1,10 +1,21 @@
 # koll.zsh
 
 ![Kollzsh Beer](kollzsh_beer.png)
-
+```
+  :###:
+  :   :
+  :   :
+.'     '.
+:       :
+|_______|
+|kollzsh|
+|‐‐‐‐‐‐‐|
+|       |
+:_______:
+```
 koll.zsh: keyvez ollama for zsh
 
-https://github.com/keyvank/kollzsh/assets/demo.mov
+<img src="demo.svg" alt="Kollzsh Demo" width="600">
 
 An [`oh-my-zsh`](https://ohmyz.sh) plugin that integrates the OLLAMA AI model 
 with [fzf](https://github.com/junegunn/fzf) to provide intelligent command 
