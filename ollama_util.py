@@ -2,10 +2,9 @@
 import logging
 from datetime import datetime
 import sys
+import os
 import json
 from ollama import Client
-import platform
-
 # Configure logging
 LOG_FILE = '/tmp/kollzsh_debug.log'
 logging.basicConfig(
@@ -37,7 +36,7 @@ def get_shell_command_tool(commands: list[str]) -> dict:
 
 def interact_with_ollama(user_query):
     """Interact with the Ollama server and retrieve command suggestions."""
-    client = Client(host='http://192.168.1.240:11434')
+    client = Client(host=os.environ['KOLLZSH_URL'])
     log_debug("Sending query to Ollama:", user_query)
     
     # Format the user query to focus on shell commands
@@ -45,7 +44,7 @@ def interact_with_ollama(user_query):
     
     try:
         response = client.chat(
-            model='qwen2.5-coder:14b',
+            model=os.environ['KOLLZSH_MODEL'],
             messages=[{
                 "role": "user",
                 "content": formatted_query

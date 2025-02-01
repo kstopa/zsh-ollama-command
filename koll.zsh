@@ -61,6 +61,11 @@ fzf_kollzsh() {
 
   log_debug "Raw Ollama response:" "$KOLLZSH_RESPONSE"
 
+  # Export necessary environment variables to be used by the python script
+  export KOLLZSH_URL
+  export KOLLZSH_COMMAND_COUNT
+  export KOLLZSH_MODEL
+
   # Get absolute path to the script directory
   PLUGIN_DIR=${${(%):-%x}:A:h}
   KOLLZSH_COMMANDS=$(python3 "$PLUGIN_DIR/ollama_util.py" "$KOLLZSH_USER_QUERY")
