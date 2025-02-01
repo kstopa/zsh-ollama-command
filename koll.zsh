@@ -6,6 +6,8 @@
 (( ! ${+KOLLZSH_COMMAND_COUNT} )) && typeset -g KOLLZSH_COMMAND_COUNT='5'
 # default ollama server host
 (( ! ${+KOLLZSH_URL} )) && typeset -g KOLLZSH_URL='http://localhost:11434'
+# default ollama time to keep the server alive
+(( ! ${+KOLLZSH_KEEP_ALIVE} )) && typeset -g KOLLZSH_KEEP_ALIVE='1h'
 
 # Source utility functions
 source "${0:A:h}/utils.zsh"
@@ -65,6 +67,7 @@ fzf_kollzsh() {
   export KOLLZSH_URL
   export KOLLZSH_COMMAND_COUNT
   export KOLLZSH_MODEL
+  export KOLLZSH_KEEP_ALIVE
 
   # Get absolute path to the script directory
   PLUGIN_DIR=${${(%):-%x}:A:h}

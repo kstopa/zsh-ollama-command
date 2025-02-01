@@ -45,6 +45,7 @@ suggestions based on user input requirements.
 | `KOLLZSH_HOTKEY`        | `^o` (Ctrl-o)            | Default shortcut key for triggering the plugin |
 | `KOLLZSH_COMMAND_COUNT` | `5`                      | Number of command suggestions displayed        |
 | `KOLLZSH_URL`           | `http://localhost:11434` | The URL of OLLAMA server host                  |
+| `KOLLZSH_KEEP_ALIVE`    | `1h`                     | The time to keep the OLLAMA server alive       |
 
 ## Usage
 
