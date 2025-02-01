@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# Created by https://www.toptal.com/developers/gitignore/api/macos,jetbrains,zsh
-=======
->>>>>>> 6ba827e (Added python files to .gitignore)
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,jetbrains,zsh
 
 ### JetBrains ###
@@ -74,12 +70,9 @@ zsdoc/data
 # Zunit tests' output
 /tests/_output/*
 !/tests/_output/.gitkeep
-<<<<<<< HEAD
-=======
 
 
 # Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
->>>>>>> 6ba827e (Added python files to .gitignore)
