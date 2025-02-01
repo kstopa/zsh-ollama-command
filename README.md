@@ -52,19 +52,10 @@ suggestions based on user input requirements.
 1. Clone the repository to `oh-my-zsh` custom plugin folder
 
    ```bash
-   git clone https://github.com/keyvez/kollzsh.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/kollzsh
+   git clone https://github.com/krugergui/kollzsh.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/kollzsh
    ```
 
-2. Set the variables before the plugin initialization:
-
-   ```bash
-   KOLLZSH_MODEL="qwen2.5-coder:3b"
-   KOLLZSH_HOTKEY="^o"
-   KOLLZSH_COMMAND_COUNT=5
-   KOLLZSH_URL="http://localhost:11434"
-   ```
-
-3. Enable the plugin in ~/.zshrc:
+2. Enable the plugin in ~/.zshrc:
 
    ```bash
    plugins=(
@@ -73,8 +64,19 @@ suggestions based on user input requirements.
    )
    ```
 
+3. Set the desirable variables
+
+   ```bash
+   KOLLZSH_MODEL="qwen2.5-coder:3b"
+   KOLLZSH_HOTKEY="^o"
+   KOLLZSH_COMMAND_COUNT=5
+   KOLLZSH_URL="http://localhost:11434"
+   KOLLZSH_KEEP_ALIVE="1h"
+   ```
+
 4. Input what you want to do then trigger the plugin. Press the custom shortcut (default is Ctrl-o) to start
    the command suggestion process.
+
 5. Interact with FZF: Type a query or input requirement, and FZF will display
    suggested MacOS terminal commands. Select one to execute.
 

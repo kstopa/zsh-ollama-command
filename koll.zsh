@@ -101,8 +101,6 @@ fzf_kollzsh() {
   return 0
 }
 
-validate_required
-
 autoload -U fzf_kollzsh
 zle -N fzf_kollzsh
 bindkey "$KOLLZSH_HOTKEY" fzf_kollzsh
