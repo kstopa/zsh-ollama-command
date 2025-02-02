@@ -48,7 +48,10 @@ def interact_with_ollama(user_query):
     formatted_query = (
         f"Generate shell commands for the following task: {user_query}. \n"
         "Provide multiple relevant commands if available. \n"
-        "Output in JSON format with markdown-wrapped JSON."
+        "Output in JSON format with markdown-wrapped JSON. \n"
+        "The JSON needs to include a key named 'commands' with a list of commands. \n"
+        "Use the character # for comments. \n"
+        "Insert the comments inline after each command."
     )
 
     try:
@@ -95,6 +98,8 @@ def parse_commands(content):
         if markdown_match:
             content_type = markdown_match.group(1)
             content = markdown_match.group(2)
+        else:
+            content_type = None
 
         # Clean and normalize the content
         content = normalize_json_string(content)
