@@ -73,6 +73,7 @@ suggestions based on user input requirements.
    KOLLZSH_COMMAND_COUNT=5
    KOLLZSH_URL="http://localhost:11434"
    KOLLZSH_KEEP_ALIVE="1h"
+   KOLLZSH_PYTHON3="python3"
    ```
 
 4. Input what you want to do then trigger the plugin. Press the custom shortcut (default is Ctrl-o) to start
