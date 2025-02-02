@@ -8,6 +8,8 @@
 (( ! ${+KOLLZSH_URL} )) && typeset -g KOLLZSH_URL='http://localhost:11434'
 # default ollama time to keep the server alive
 (( ! ${+KOLLZSH_KEEP_ALIVE} )) && typeset -g KOLLZSH_KEEP_ALIVE='1h'
+# default python3 path
+(( ! ${+KOLLZSH_PYTHON3} )) && typeset -g KOLLZSH_PYTHON3='python3'
 
 # Source utility functions
 source "${0:A:h}/utils.zsh"
@@ -33,7 +35,7 @@ validate_required() {
   check_command "jq" || return 1
   check_command "fzf" || return 1
   check_command "curl" || return 1
-  check_command "python3" || return 1
+  check_command $KOLLZSH_PYTHON3 || return 1
   
   # Check if Ollama is running
   check_ollama_running || return 1
@@ -71,7 +73,7 @@ fzf_kollzsh() {
 
   # Get absolute path to the script directory
   PLUGIN_DIR=${${(%):-%x}:A:h}
-  KOLLZSH_COMMANDS=$(python3 "$PLUGIN_DIR/ollama_util.py" "$KOLLZSH_USER_QUERY")
+  KOLLZSH_COMMANDS=$( "$KOLLZSH_PYTHON3" "$PLUGIN_DIR/ollama_util.py" "$KOLLZSH_USER_QUERY")
   
   if [ $? -ne 0 ] || [ -z "$KOLLZSH_COMMANDS" ]; then
     log_debug "Failed to parse commands"
