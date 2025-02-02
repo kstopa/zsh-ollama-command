@@ -2,8 +2,8 @@
 import json
 import logging
 import os
+import re
 import sys
-from datetime import datetime
 
 from ollama import Client
 
@@ -45,7 +45,11 @@ def interact_with_ollama(user_query):
     log_debug("Sending query to Ollama:", user_query)
 
     # Format the user query to focus on shell commands
-    formatted_query = f"Generate shell commands for the following task: {user_query}. Provide multiple relevant commands if available."
+    formatted_query = (
+        f"Generate shell commands for the following task: {user_query}. \n"
+        "Provide multiple relevant commands if available. \n"
+        "Output in JSON format with markdown-wrapped JSON."
+    )
 
     try:
         response = client.chat(
@@ -87,24 +91,25 @@ def parse_commands(content):
     """Parse commands from response content."""
     try:
         # Try to find markdown-wrapped JSON first
-        import re
-
-        markdown_match = re.search(r"```json\s*(.*?)\s*```", content, re.DOTALL)
+        markdown_match = re.search(r"```(json|bash|zsh)\s*(.*?)\s*```", content, re.DOTALL)
         if markdown_match:
-            content = markdown_match.group(1)
+            content_type = markdown_match.group(1)
+            content = markdown_match.group(2)
 
         # Clean and normalize the content
         content = normalize_json_string(content)
         log_debug("Normalized content:", content)
 
         # Try parsing as JSON
-        try:
-            commands = json.loads(content)
-        except json.JSONDecodeError:
-            # Try Python's ast as fallback
-            import ast
+        if not content_type or content_type == "json":
+            try:
+                commands = json.loads(content)
+            except json.JSONDecodeError:
+                log_debug("Content is not a valid JSON object")
 
-            commands = ast.literal_eval(content)
+        # Try parsing as shell commands
+        if not content_type or content_type == "bash" or content_type == "zsh":
+            commands = content.split("\n")
 
         # Ensure we have a list of commands
         if isinstance(commands, list):
