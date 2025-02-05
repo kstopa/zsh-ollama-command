@@ -75,10 +75,13 @@ fzf_kollzsh() {
   PLUGIN_DIR=${${(%):-%x}:A:h}
   KOLLZSH_COMMANDS=$( "$KOLLZSH_PYTHON3" "$PLUGIN_DIR/ollama_util.py" "$KOLLZSH_USER_QUERY")
   
+  # Check if the command was successful and that the commands is an array
   if [ $? -ne 0 ] || [ -z "$KOLLZSH_COMMANDS" ]; then
     log_debug "Failed to parse commands"
     echo "Error: Failed to parse commands"
-    return 1
+    echo "Raw response:"
+    echo "$KOLLZSH_COMMANDS"
+    return 0
   fi
   
   log_debug "Extracted commands:" "$KOLLZSH_COMMANDS"

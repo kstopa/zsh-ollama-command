@@ -50,8 +50,6 @@ def interact_with_ollama(user_query):
         "Provide multiple relevant commands if available. \n"
         "Output in JSON format with markdown-wrapped JSON. \n"
         "The JSON needs to include a key named 'commands' with a list of commands. \n"
-        "Use the character # for comments. \n"
-        "Insert the comments inline after each command."
     )
 
     try:
@@ -132,11 +130,11 @@ def parse_commands(content):
             return cleaned_commands
 
         log_debug("Parsed content is not a list:", commands)
-        return []
+        return content
 
     except Exception as e:
         log_debug(f"Error parsing commands: {str(e)}", content)
-        return []
+        return content
 
 
 def normalize_json_string(content):
