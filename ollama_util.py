@@ -92,6 +92,10 @@ def normalize_json_string(content):
     content = content.replace("\r", " ")
     content = content.replace("\t", " ")
 
+    # Remove prompt characters
+    if content.startswith("$") or content.startswith(">") or content.startswith("#"):
+        content = content[1:]
+
     # Handle escaped characters
     content = content.replace('\\"', '"')  # Temporarily unescape quotes
     content = content.replace("\\\\", "\\")  # Fix double escapes
