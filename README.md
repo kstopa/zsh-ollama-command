@@ -41,12 +41,12 @@ Then following this example you should set `KOLLZSH_PYTHON3` to `~/.venvs/ollama
 
 | Variable Name           | Default Value            | Description                                    |
 | ----------------------- | ------------------------ | ---------------------------------------------- |
-| `KOLLZSH_MODEL`         | `qwen2.5-coder:3b`       | OLLAMA model to use (e.g., `qwen2.5-coder:3b`) |
-| `KOLLZSH_HOTKEY`        | `^o` (Ctrl-o)            | Default shortcut key for triggering the plugin |
-| `KOLLZSH_COMMAND_COUNT` | `5`                      | Number of command suggestions displayed        |
-| `KOLLZSH_URL`           | `http://localhost:11434` | The URL of OLLAMA server host                  |
-| `KOLLZSH_KEEP_ALIVE`    | `1h`                     | The time to keep the OLLAMA server alive       |
-| `KOLLZSH_PYTHON3`       | `/usr/bin/python3`       | Python interpreter to use (set with your env)  |
+| `ZSH_OLLAMA_MODEL`         | `qwen2.5-coder:3b`       | OLLAMA model to use (e.g., `qwen2.5-coder:3b`) |
+| `ZSH_OLLAMA_HOTKEY`        | `^o` (Ctrl-o)            | Default shortcut key for triggering the plugin |
+| `ZSH_OLLAMA_COMMAND_COUNT` | `5`                      | Number of command suggestions displayed        |
+| `ZSH_OLLAMA_URL`           | `http://localhost:11434` | The URL of OLLAMA server host                  |
+| `ZSH_OLLAMA_KEEP_ALIVE`    | `1h`                     | The time to keep the OLLAMA server alive       |
+| `ZSH_OLLAMA_PYTHON3`       | `/usr/bin/python3`       | Python interpreter to use (set with your env)  |
 
 ### Usage
 
@@ -68,12 +68,12 @@ Then following this example you should set `KOLLZSH_PYTHON3` to `~/.venvs/ollama
 3. Set the desirable variables
 
    ```bash
-   KOLLZSH_MODEL="qwen2.5-coder:3b"
-   KOLLZSH_HOTKEY="^o"
-   KOLLZSH_COMMAND_COUNT=5
-   KOLLZSH_URL="http://localhost:11434"
-   KOLLZSH_KEEP_ALIVE="1h"
-   KOLLZSH_PYTHON3="python3"
+   ZSH_OLLAMA_MODEL="qwen2.5-coder:3b"
+   ZSH_OLLAMA_HOTKEY="^o"
+   ZSH_OLLAMA_COMMAND_COUNT=5
+   ZSH_OLLAMA_URL="http://localhost:11434"
+   ZSH_OLLAMA_KEEP_ALIVE="1h"
+   ZSH_OLLAMA_PYTHON3="python3"
    ```
 
 4. Input what you want to do then trigger the plugin. Press the custom shortcut (default is Ctrl-o) to start

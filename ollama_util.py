@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-import json
 import logging
 import os
-import re
 import sys
 
 from ollama import Client
@@ -19,7 +17,7 @@ class CommandList(BaseModel):
 
 
 # Configure logging
-LOG_FILE = "/tmp/kollzsh_debug.log"
+LOG_FILE = "/tmp/zsh_ollama_debug.log"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.DEBUG,
@@ -40,7 +38,7 @@ def log_debug(message, data=None):
 
 def interact_with_ollama(user_query):
     """Interact with the Ollama server and retrieve command suggestions."""
-    client = Client(host=os.environ["KOLLZSH_URL"])
+    client = Client(host=os.environ["ZSH_OLLAMA_URL"])
     log_debug("Sending query to Ollama:", user_query)
 
     # Format the user query to focus on shell commands
@@ -53,8 +51,8 @@ def interact_with_ollama(user_query):
 
     try:
         response = client.chat(
-            model=os.environ["KOLLZSH_MODEL"],
-            keep_alive=os.environ["KOLLZSH_KEEP_ALIVE"],
+            model=os.environ["ZSH_OLLAMA_MODEL"],
+            keep_alive=os.environ["ZSH_OLLAMA_KEEP_ALIVE"],
             messages=[{"role": "user", "content": formatted_query}],
             stream=False,
             format=CommandList.model_json_schema(),
