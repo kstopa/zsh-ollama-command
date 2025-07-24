@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
-import json
 import logging
 import os
-import re
 import sys
 
 from ollama import Client
+from pydantic import BaseModel
+
+
+class Command(BaseModel):
+    command: str
+    description: str
+
+
+class CommandList(BaseModel):
+    commands: list[Command]
+
 
 # Configure logging
-LOG_FILE = "/tmp/kollzsh_debug.log"
+LOG_FILE = "/tmp/zsh_ollama_debug.log"
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.DEBUG,
@@ -20,28 +29,16 @@ logging.basicConfig(
 def log_debug(message, data=None):
     """Log debug message with optional data."""
     if data:
-        logging.debug(f"{message}\nData: {data}\n----------------------------------------")
+        logging.debug(
+            f"{message}\nData: {data}\n----------------------------------------"
+        )
     else:
         logging.debug(message)
 
 
-def get_shell_command_tool(commands: list[str]) -> dict:
-    """
-    Generate shell command tool specification for Ollama
-
-    Args:
-        commands: List of shell commands to be executed
-
-    Returns:
-        dict: Tool specification containing name, description, and parameters
-    """
-    log_debug("Generating tool specification for commands:", commands)
-    return commands
-
-
 def interact_with_ollama(user_query):
     """Interact with the Ollama server and retrieve command suggestions."""
-    client = Client(host=os.environ["KOLLZSH_URL"])
+    client = Client(host=os.environ["ZSH_OLLAMA_URL"])
     log_debug("Sending query to Ollama:", user_query)
 
     # Format the user query to focus on shell commands
@@ -54,31 +51,21 @@ def interact_with_ollama(user_query):
 
     try:
         response = client.chat(
-            model=os.environ["KOLLZSH_MODEL"],
-            keep_alive=os.environ["KOLLZSH_KEEP_ALIVE"],
+            model=os.environ["ZSH_OLLAMA_MODEL"],
+            keep_alive=os.environ["ZSH_OLLAMA_KEEP_ALIVE"],
             messages=[{"role": "user", "content": formatted_query}],
             stream=False,
-            tools=[get_shell_command_tool],
+            format=CommandList.model_json_schema(),
         )
         log_debug("Received response from Ollama:", response)
 
-        # Extract tool calls from the response
-        if hasattr(response.message, "tool_calls") and response.message.tool_calls:
-            for tool_call in response.message.tool_calls:
-                if tool_call.function.name == "get_shell_command_tool":
-                    try:
-                        commands = tool_call.function.arguments.get("commands", [])
-                        if commands:
-                            log_debug("Successfully extracted commands:", commands)
-                            return commands
-                    except AttributeError as e:
-                        log_debug(f"Error accessing tool call arguments: {str(e)}")
-
         # Fallback to parsing content if no tool calls
-        content = response.message.content if hasattr(response.message, "content") else ""
+        content = (
+            response.message.content if hasattr(response.message, "content") else ""
+        )
         if content:
             log_debug("No tool calls found, falling back to content parsing")
-            return parse_commands(content)
+            return parse_ollama_response(content)
 
         log_debug("No valid commands found in response")
         return []
@@ -88,53 +75,12 @@ def interact_with_ollama(user_query):
         return []
 
 
-def parse_commands(content):
-    """Parse commands from response content."""
-    try:
-        # Try to find markdown-wrapped JSON first
-        markdown_match = re.search(r"```(json|bash|zsh)\s*(.*?)\s*```", content, re.DOTALL)
-        if markdown_match:
-            content_type = markdown_match.group(1)
-            content = markdown_match.group(2)
-        else:
-            content_type = None
-
-        # Clean and normalize the content
-        content = normalize_json_string(content)
-        log_debug("Normalized content:", content)
-
-        # Try parsing as JSON
-        if not content_type or content_type == "json":
-            try:
-                commands = json.loads(content)
-            except json.JSONDecodeError:
-                log_debug("Content is not a valid JSON object")
-
-        # Try parsing as shell commands
-        if not content_type or content_type == "bash" or content_type == "zsh":
-            commands = content.split("\n")
-
-        # Ensure we have a list of commands
-        if isinstance(commands, list):
-            # Clean up commands
-            cleaned_commands = []
-            for cmd in commands:
-                if isinstance(cmd, str):
-                    # Clean up escaping but preserve shell escapes
-                    cmd = cmd.replace('\\"', '"')  # Unescape quotes
-                    cmd = cmd.replace("\\\\", "\\")  # Fix double escapes
-                    cmd = cmd.replace('"', '\\"')  # Re-escape quotes for shell
-                    cleaned_commands.append(cmd)
-
-            log_debug("Successfully parsed commands:", cleaned_commands)
-            return cleaned_commands
-
-        log_debug("Parsed content is not a list:", commands)
-        return content
-
-    except Exception as e:
-        log_debug(f"Error parsing commands: {str(e)}", content)
-        return content
+def parse_ollama_response(content):
+    cleaned_commands = []
+    commands = CommandList.model_validate_json(content)
+    for cmd in commands.commands:
+        cleaned_commands.append(normalize_json_string(cmd.command))
+    return cleaned_commands
 
 
 def normalize_json_string(content):
@@ -143,6 +89,10 @@ def normalize_json_string(content):
     content = content.replace("\n", " ")
     content = content.replace("\r", " ")
     content = content.replace("\t", " ")
+
+    # Remove prompt characters
+    if content.startswith("$") or content.startswith(">") or content.startswith("#"):
+        content = content[1:]
 
     # Handle escaped characters
     content = content.replace('\\"', '"')  # Temporarily unescape quotes
